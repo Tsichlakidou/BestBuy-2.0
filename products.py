@@ -49,3 +49,36 @@ class Product:
 
         self.set_quantity(self.quantity - quantity)
         return self.price * quantity
+
+
+class NonStockedProduct(Product):
+    """Represent a non-stored product available in the store."""
+    def __init__(self,name, price):
+        super().__init__(name, price, 0)
+
+    def show(self):
+        """Show the product."""
+        print(self.name, "Price:", self.price)
+
+    def buy(self, quantity) -> float:
+        """Make the products buy."""
+        if quantity <= 0:
+            raise Exception("Quantity must be positive")
+        return self.price * quantity
+
+class LimitedProduct(Product):
+    """Represent a limited product available in the store."""
+    def __init__(self, name, price, quantity, maximum):
+        super().__init__(name, price, quantity)
+        self.maximum = maximum
+
+    def show(self):
+        """Show the product."""
+        super().show()
+        print("Maximum:", self.maximum)
+
+    def buy(self, quantity) -> float:
+        """Make the products buy."""
+        if quantity > self.maximum:
+            raise Exception(f"You can only buy {self.maximum} products")
+        return super().buy(quantity)
