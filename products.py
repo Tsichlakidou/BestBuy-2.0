@@ -1,8 +1,7 @@
-import promotions
 
 class Product:
     """Represent a product available in the store."""
-    def __init__(self, name, price, quantity,promotion=None):
+    def __init__(self, name, price, quantity, promotion=None):
         if name == "":
             raise Exception("Name cannot be empty")
         if price < 0:
@@ -29,6 +28,7 @@ class Product:
     def get_promotion(self):
         """Return the current product promotion."""
         return self.promotion
+
     def set_promotion(self, promotion):
         """Set the current product promotion."""
         self.promotion = promotion
@@ -67,12 +67,9 @@ class Product:
             return self.promotion.apply_promotion(self, quantity)
 
 
-
-
-
 class NonStockedProduct(Product):
     """Represent a non-stored product available in the store."""
-    def __init__(self,name, price):
+    def __init__(self, name, price):
         super().__init__(name, price, 0)
 
     def show(self):
@@ -108,4 +105,3 @@ class LimitedProduct(Product):
         if quantity > self.maximum:
             raise Exception(f"You can only buy {self.maximum} products")
         return super().buy(quantity)
-

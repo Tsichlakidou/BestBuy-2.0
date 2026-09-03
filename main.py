@@ -11,6 +11,7 @@ product_list = [ products.Product("MacBook Air M2", price=1450, quantity=100),
                  products.LimitedProduct("Shipping", price=10, quantity=250, maximum=1)
                ]
 best_buy = store.Store(product_list)
+
 # Create promotion catalog
 second_half_price = promotions.SecondHalfPrice("Second Half price!")
 third_one_free = promotions.ThirdOneFree("Third One Free!")
@@ -79,6 +80,5 @@ def start(store_odj):
 
         else:
             print("Invalid choice.")
-
 
 start(best_buy)
