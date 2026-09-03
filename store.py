@@ -1,15 +1,6 @@
 from typing import List
 from products import Product
 
-
-def order(shopping_list)-> float:
-    """Make the order of the products."""
-    total_price = 0
-    for product, quantity in shopping_list:
-        total_price += product.buy(quantity)
-    return total_price
-
-
 class Store:
     """Represent a store containing multiple products."""
     def __init__(self,products):
@@ -34,3 +25,11 @@ class Store:
             if product.is_active():
                 active_products.append(product)
         return active_products
+
+    def order(self, shopping_list) -> float:
+        """Make the order of the products."""
+        total_price = 0
+        for product, quantity in shopping_list:
+            total_price += product.buy(quantity)
+        return total_price
+
