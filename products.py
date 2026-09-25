@@ -1,4 +1,4 @@
-
+"""Define the product classes for the Best Buy store."""
 class Product:
     """Represent a product available in the store."""
     def __init__(self, name, price, quantity, promotion=None):
@@ -12,18 +12,20 @@ class Product:
         self.name = name
         self.price = price
         self.quantity = quantity
-        self.active = True
+        self.active = quantity > 0
         self.promotion = promotion
 
-    def get_quantity(self)-> int:
+    def get_quantity(self) -> int:
         """Return the current product quantity."""
         return self.quantity
 
     def set_quantity(self, quantity):
         """Set the current product quantity."""
         self.quantity = quantity
-        if self.quantity ==0:
+        if self.quantity == 0:
             self.deactivate()
+        else:
+            self.activate()
 
     def get_promotion(self):
         """Return the current product promotion."""
@@ -48,9 +50,14 @@ class Product:
     def show(self):
         """Show the product."""
         if self.promotion is None:
-            print(self.name, "Price:",self.price, "Quantity:", self.quantity)
+            print(self.name, "Price:", self.price, "Quantity:", self.quantity)
         else:
-            print(self.name, "Price:", self.price, "Quantity:", self.quantity, "Promotion:", self.promotion.name)
+            print(
+                self.name,
+                "Price:", self.price,
+                "Quantity:", self.quantity,
+                "Promotion:", self.promotion.name
+            )
 
     def buy(self, quantity) -> float:
         """Make the products buy."""
@@ -59,25 +66,35 @@ class Product:
 
         if quantity > self.quantity:
             raise Exception("There are not enough products for this purchase")
+
+        self.set_quantity(self.quantity - quantity)
+
         if self.get_promotion() is None:
-            self.set_quantity(self.quantity - quantity)
             return self.price * quantity
-        else:
-            self.set_quantity(self.quantity - quantity)
-            return self.promotion.apply_promotion(self, quantity)
+        return self.promotion.apply_promotion(self, quantity)
 
 
 class NonStockedProduct(Product):
     """Represent a non-stored product available in the store."""
     def __init__(self, name, price):
         super().__init__(name, price, 0)
+        self.activate()
+
+    def set_quantity(self, quantity):
+        """Do not change quantity for a non-stocked product."""
+        pass
 
     def show(self):
         """Show the product."""
         if self.promotion is None:
-            print(self.name, "Price:", self.price)
+            print(self.name, "Price:", self.price, "Quantity: Unlimited")
         else:
-            print(self.name, "Price:", self.price, "Promotion:", self.promotion.name)
+            print(
+                self.name,
+                "Price:", self.price,
+                "Quantity: Unlimited",
+                "Promotion:", self.promotion.name
+            )
 
     def buy(self, quantity) -> float:
         """Make the products buy."""
@@ -85,8 +102,7 @@ class NonStockedProduct(Product):
             raise Exception("Quantity must be positive")
         if self.get_promotion() is None:
             return self.price * quantity
-        else:
-            return self.promotion.apply_promotion(self, quantity)
+        return self.promotion.apply_promotion(self, quantity)
 
 
 class LimitedProduct(Product):
@@ -97,8 +113,21 @@ class LimitedProduct(Product):
 
     def show(self):
         """Show the product."""
-        super().show()
-        print("Maximum:", self.maximum)
+        if self.promotion is None:
+            print(
+                self.name,
+                "Price:", self.price,
+                "Quantity:", self.quantity,
+                "Maximum:", self.maximum
+            )
+        else:
+            print(
+                self.name,
+                "Price:", self.price,
+                "Quantity:", self.quantity,
+                "Promotion:", self.promotion.name,
+                "Maximum:", self.maximum
+            )
 
     def buy(self, quantity) -> float:
         """Make the products buy."""

@@ -1,9 +1,11 @@
+"""Define the Store class and order functionality."""
 from typing import List
 from products import Product
 
+
 class Store:
     """Represent a store containing multiple products."""
-    def __init__(self,products):
+    def __init__(self, products):
         self.products = products
 
     def add_product(self, product):
@@ -14,11 +16,11 @@ class Store:
         """Remove a product from the store."""
         self.products.remove(product)
 
-    def get_total_quantity(self)->int:
+    def get_total_quantity(self) -> int:
         """Sum the quantity of all products in the store."""
-        return sum([product.quantity for product in self.products])
+        return sum(product.quantity for product in self.products)
 
-    def get_all_products(self)->List[Product]:
+    def get_all_products(self) -> List[Product]:
         """Show all active products in the store"""
         active_products = []
         for product in self.products:
@@ -26,10 +28,24 @@ class Store:
                 active_products.append(product)
         return active_products
 
-    def order(self, shopping_list) -> float:
+    @staticmethod
+    def order(shopping_list) -> float:
         """Make the order of the products."""
-        total_price = 0
+        combined_order = {}
+        original_quantities = {}
         for product, quantity in shopping_list:
-            total_price += product.buy(quantity)
-        return total_price
+            if product in combined_order:
+                combined_order[product] += quantity
+            else:
+                combined_order[product] = quantity
+                original_quantities[product] = product.get_quantity()
+        try:
+            total_price = 0
+            for product, quantity in combined_order.items():
+                total_price += product.buy(quantity)
+        except Exception:
+            for product, original_quantity in original_quantities.items():
+                product.set_quantity(original_quantity)
 
+            raise
+        return total_price
